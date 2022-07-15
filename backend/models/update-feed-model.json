@@ -6,13 +6,13 @@
     "content": {
       "type": "string"
     },
-    "editDate": {
+    "updatedAt": {
       "type": "string"
     }
   },
   "required": [
     "content",
-    "editDate"
+    "updatedAt"
   ],
   "additionalProperties": false
 }
