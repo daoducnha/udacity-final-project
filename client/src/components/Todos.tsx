@@ -1,10 +1,8 @@
 import dateFormat from 'dateformat'
 import { History } from 'history'
-import update from 'immutability-helper'
 import * as React from 'react'
 import {
   Button,
-  Checkbox,
   Divider,
   Grid,
   Header,
@@ -14,107 +12,110 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createFeed, deleteFeed, getFeeds, patchFeed } from '../api/feeds-api'
 import Auth from '../auth/Auth'
-import { Todo } from '../types/Todo'
+import { Feed } from '../types/Feed'
 
-interface TodosProps {
+interface FeedsProps {
   auth: Auth
   history: History
 }
 
-interface TodosState {
-  todos: Todo[]
-  newTodoName: string
-  loadingTodos: boolean
+interface FeedsState {
+  feeds: Feed[]
+  newFeedContent: string
+  loadingFeeds: boolean
 }
 
-export class Todos extends React.PureComponent<TodosProps, TodosState> {
-  state: TodosState = {
-    todos: [],
-    newTodoName: '',
-    loadingTodos: true
+export class Todos extends React.PureComponent<FeedsProps, FeedsState> {
+  state: FeedsState = {
+    feeds: [],
+    newFeedContent: '',
+    loadingFeeds: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTodoName: event.target.value })
+    this.setState({ newFeedContent: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (feedId: string) => {
+    this.props.history.push(`/feeds/${feedId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onFeedCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
-        name: this.state.newTodoName,
-        dueDate
+      const newFeed = await createFeed(this.props.auth.getIdToken(), {
+        content: this.state.newFeedContent
       })
       this.setState({
-        todos: [...this.state.todos, newTodo],
-        newTodoName: ''
+        feeds: [...this.state.feeds, newFeed],
+        newFeedContent: ''
       })
     } catch {
-      alert('Todo creation failed')
+      alert('Feed creation failed')
     }
   }
 
-  onTodoDelete = async (todoId: string) => {
+  onFeedDelete = async (feedId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), todoId)
+      await deleteFeed(this.props.auth.getIdToken(), feedId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.todoId !== todoId)
+        feeds: this.state.feeds.filter(feed => feed.feedId !== feedId)
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Feed deletion failed')
     }
   }
 
-  onTodoCheck = async (pos: number) => {
+  onFeedUpdateContent = async (feedId: string, newContent: string) => {
     try {
-      const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
-        name: todo.name,
-        dueDate: todo.dueDate,
-        done: !todo.done
+      const feed = this.state.feeds.filter(feed => feed.feedId === feedId)[0]
+      await patchFeed(this.props.auth.getIdToken(), feed.feedId, {
+        content: feed.content
       })
+
       this.setState({
-        todos: update(this.state.todos, {
-          [pos]: { done: { $set: !todo.done } }
+        feeds: this.state.feeds.map(feed => {
+          if (feed.feedId === feedId)  {
+            let clone = Object.assign({}, feed)
+            clone['content'] = newContent
+            return clone
+          }
+          return feed
+          
         })
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Feed update failed')
     }
   }
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
+      const feeds = await getFeeds(this.props.auth.getIdToken())
       this.setState({
-        todos,
-        loadingTodos: false
+        feeds,
+        loadingFeeds: false
       })
     } catch (e) {
       
-      alert(`Failed to fetch todos: ${e instanceof Error? e.message:  'Cannot parse error message'}`)
+      alert(`Failed to fetch feeds: ${e instanceof Error? e.message:  'Cannot parse error message'}`)
     }
   }
 
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">FEEDS</Header>
 
-        {this.renderCreateTodoInput()}
+        {this.renderCreateFeedInput()}
 
-        {this.renderTodos()}
+        {this.renderFeeds()}
       </div>
     )
   }
 
-  renderCreateTodoInput() {
+  renderCreateFeedInput() {
     return (
       <Grid.Row>
         <Grid.Column width={16}>
@@ -124,7 +125,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               labelPosition: 'left',
               icon: 'add',
               content: 'New task',
-              onClick: this.onTodoCreate
+              onClick: this.onFeedCreate
             }}
             fluid
             actionPosition="left"
@@ -139,62 +140,65 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  renderTodos() {
-    if (this.state.loadingTodos) {
+  renderFeeds() {
+    if (this.state.loadingFeeds) {
       return this.renderLoading()
     }
 
-    return this.renderTodosList()
+    return this.renderFeedsList()
   }
 
   renderLoading() {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading FEEDs
         </Loader>
       </Grid.Row>
     )
   }
 
-  renderTodosList() {
+  renderFeedsList() {
     return (
       <Grid padded>
-        {this.state.todos.map((todo, pos) => {
+        {this.state.feeds.map((feed, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
-              <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
-                />
-              </Grid.Column>
+            <Grid.Row key={feed.feedId}>
               <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+                {feed.content}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                {feed.createdAt}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
+                  onClick={() => this.onEditButtonClick(feed.feedId)}
                 >
                   <Icon name="pencil" />
                 </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
+                    icon
+                    color='blue'
+                    onClick={() => this.onFeedUpdateContent(feed.feedId, feed.content)}
+                  >
+                    <Icon name='upload'/>
+                  </Button>
+              </Grid.Column>
+              <Grid.Column width={1} floated="right">
+                <Button
                   icon
                   color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
+                  onClick={() => this.onFeedDelete(feed.feedId)}
                 >
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
+              {feed.attachmentUrl && (
+                <Image src={feed.attachmentUrl} size="small" wrapped />
               )}
               <Grid.Column width={16}>
                 <Divider />
@@ -206,10 +210,8 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  calculateDueDate(): string {
+  calculateDate(): string {
     const date = new Date()
-    date.setDate(date.getDate() + 7)
-
     return dateFormat(date, 'yyyy-mm-dd') as string
   }
 }

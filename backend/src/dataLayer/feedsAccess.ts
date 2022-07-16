@@ -1,17 +1,17 @@
 import * as AWS from 'aws-sdk'
-import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { createLogger } from '../utils/logger'
 import { FeedItem } from '../models/FeedItem'
 import { FeedUpdate } from '../models/FeedUpdate';
 
+const AWSXRay = require('aws-xray-sdk')
 const XAWS = AWSXRay.captureAWS(AWS)
 
 const logger = createLogger('FeedsAccess')
 
 export class FeedsAccess {
     constructor(
-        private readonly docClient: DocumentClient = new XAWS.Dynamodb.DocumentClient(),
+        private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
         private readonly feedsTable = process.env.FEEDS_TABLE) {
 
     }
@@ -56,9 +56,9 @@ export class FeedsAccess {
         await this.docClient.put({
             TableName: this.feedsTable,
             Item: feedItem
-        })
+        }).promise()
 
-        logger.info(`Create new feed item with id ${feedItem.feedId} for user ${feedItem.userId} success.`)
+        // logger.info(`Create new feed item with id ${feedItem.feedId} for user ${feedItem.userId} success.`)
         
         return feedItem
     }
@@ -123,6 +123,6 @@ export class FeedsAccess {
                 userId,
                 feedId
             }
-        })
+        }).promise()
     }
 }

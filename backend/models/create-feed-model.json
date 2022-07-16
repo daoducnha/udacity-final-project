@@ -6,14 +6,10 @@
     "content": {
       "type": "string",
       "minLength": 5
-    },
-    "createdAt": {
-      "type": "string"
     }
   },
   "required": [
-    "content",
-    "createdAt"
+    "content"
   ],
   "additionalProperties": false
 }

@@ -8,7 +8,7 @@ const logger = createLogger('s3-feed-bucket')
 const s3_bucket = process.env.ATTACHMENT_S3_BUCKET
 const AWS_REGION = process.env.AWS_REGION
 
-export function createPresignedUrl(attachmentId: string): Promise<string> {
+export async function createPresignedUrl(attachmentId: string): Promise<string> {
     logger.info(`Getting S3 SignedUrl with attachmentId: ${attachmentId}`)
 
     const s3 = new XAWS.S3({
@@ -20,7 +20,7 @@ export function createPresignedUrl(attachmentId: string): Promise<string> {
         Key: attachmentId,
         Expires: '60'  
     })
-    
+
     logger.info(`Get S3 SignedUrl with attachmentId: ${attachmentId} success.`)
 
     return presignedUrl

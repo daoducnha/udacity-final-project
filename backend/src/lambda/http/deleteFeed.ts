@@ -12,7 +12,7 @@ const logger = createLogger('deleteFeedFunction')
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const feedId = event.pathParameters.todoId
+    const feedId = event.pathParameters.feedId
     const userId = getUserId(event)
     await deleteFeed(userId, feedId)
 
