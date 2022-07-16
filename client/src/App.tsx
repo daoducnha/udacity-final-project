@@ -3,10 +3,10 @@ import { Link, Route, Router, Switch } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
-import { EditTodo } from './components/EditTodo'
+import { UpdateImageFeed } from './components/UpdateImageFeed'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
-import { Todos } from './components/Todos'
+import { Feeds } from './components/Feeds'
 
 export interface AppProps {}
 
@@ -92,15 +92,15 @@ export default class App extends Component<AppProps, AppState> {
           path="/"
           exact
           render={props => {
-            return <Todos {...props} auth={this.props.auth} />
+            return <Feeds {...props} auth={this.props.auth} />
           }}
         />
 
         <Route
-          path="/feeds/:feedId/edit"
+          path="/feeds/:feedId/upload"
           exact
           render={props => {
-            return <EditTodo {...props} auth={this.props.auth} />
+            return <UpdateImageFeed {...props} auth={this.props.auth} />
           }}
         />
 

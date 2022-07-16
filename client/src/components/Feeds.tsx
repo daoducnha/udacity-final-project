@@ -27,7 +27,7 @@ interface FeedsState {
   loadingFeeds: boolean
 }
 
-export class Todos extends React.PureComponent<FeedsProps, FeedsState> {
+export class Feeds extends React.PureComponent<FeedsProps, FeedsState> {
   state: FeedsState = {
     feeds: [],
     newFeedContent: '',
@@ -38,8 +38,8 @@ export class Todos extends React.PureComponent<FeedsProps, FeedsState> {
     this.setState({ newFeedContent: event.target.value })
   }
 
-  onEditButtonClick = (feedId: string) => {
-    this.props.history.push(`/feeds/${feedId}/edit`)
+  onUploadImageButtonClick = (feedId: string) => {
+    this.props.history.push(`/feeds/${feedId}/upload`)
   }
 
   onFeedCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
@@ -174,7 +174,7 @@ export class Todos extends React.PureComponent<FeedsProps, FeedsState> {
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(feed.feedId)}
+                  onClick={() => this.onUploadImageButtonClick(feed.feedId)}
                 >
                   <Icon name="upload" />
                 </Button>
@@ -208,10 +208,5 @@ export class Todos extends React.PureComponent<FeedsProps, FeedsState> {
         })}
       </Grid>
     )
-  }
-
-  calculateDate(): string {
-    const date = new Date()
-    return dateFormat(date, 'yyyy-mm-dd') as string
   }
 }

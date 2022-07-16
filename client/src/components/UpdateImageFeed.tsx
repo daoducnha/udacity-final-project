@@ -9,7 +9,7 @@ enum UploadState {
   UploadingFile,
 }
 
-interface EditTodoProps {
+interface UpdateImageFeedProps {
   match: {
     params: {
       feedId: string
@@ -18,16 +18,16 @@ interface EditTodoProps {
   auth: Auth
 }
 
-interface EditTodoState {
+interface UpdateImageFeedState {
   file: any
   uploadState: UploadState
 }
 
-export class EditTodo extends React.PureComponent<
-  EditTodoProps,
-  EditTodoState
+export class UpdateImageFeed extends React.PureComponent<
+  UpdateImageFeedProps,
+  UpdateImageFeedState
 > {
-  state: EditTodoState = {
+  state: UpdateImageFeedState = {
     file: undefined,
     uploadState: UploadState.NoUpload
   }
