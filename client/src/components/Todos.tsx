@@ -124,7 +124,7 @@ export class Todos extends React.PureComponent<FeedsProps, FeedsState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New task',
+              content: 'New feed',
               onClick: this.onFeedCreate
             }}
             fluid
@@ -176,7 +176,7 @@ export class Todos extends React.PureComponent<FeedsProps, FeedsState> {
                   color="blue"
                   onClick={() => this.onEditButtonClick(feed.feedId)}
                 >
-                  <Icon name="pencil" />
+                  <Icon name="upload" />
                 </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
@@ -185,7 +185,7 @@ export class Todos extends React.PureComponent<FeedsProps, FeedsState> {
                     color='blue'
                     onClick={() => this.onFeedUpdateContent(feed.feedId, feed.content)}
                   >
-                    <Icon name='upload'/>
+                    <Icon name="pencil"/>
                   </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
