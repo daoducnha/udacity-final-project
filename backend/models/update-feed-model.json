@@ -5,14 +5,10 @@
   "properties": {
     "content": {
       "type": "string"
-    },
-    "updatedAt": {
-      "type": "string"
     }
   },
   "required": [
-    "content",
-    "updatedAt"
+    "content"
   ],
   "additionalProperties": false
 }

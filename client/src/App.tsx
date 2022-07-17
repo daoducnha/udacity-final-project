@@ -7,15 +7,16 @@ import { UpdateImageFeed } from './components/UpdateImageFeed'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { Feeds } from './components/Feeds'
+import {EditFeed} from './components/EditFeed'
 
-export interface AppProps {}
+export interface AppProps { }
 
 export interface AppProps {
   auth: Auth
   history: any
 }
 
-export interface AppState {}
+export interface AppState { }
 
 export default class App extends Component<AppProps, AppState> {
   constructor(props: AppProps) {
@@ -101,6 +102,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <UpdateImageFeed {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route
+          path="/feeds/:feedId/edit"
+          exact
+          render={props => {
+            return <EditFeed {...props} auth={this.props.auth} />
           }}
         />
 

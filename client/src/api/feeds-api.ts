@@ -32,10 +32,10 @@ export async function createFeed(
 
 export async function patchFeed(
   idToken: string,
-  todoId: string,
-  updatedTodo: UpdateFeedRequest
+  feedId: string,
+  updatedFeed: UpdateFeedRequest
 ): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/todos/${todoId}`, JSON.stringify(updatedTodo), {
+  await Axios.patch(`${apiEndpoint}/feeds/${feedId}`, JSON.stringify(updatedFeed), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`

@@ -105,9 +105,10 @@ export class FeedsAccess {
                 userId,
                 feedId
             },
-            UpdateExpression: 'SET attachmentUrl = :attachmentUrl',
+            UpdateExpression: 'SET attachmentUrl = :attachmentUrl AND updatedAt = :updatedAt',
             ExpressionAttributeValues: {
-                ':attachmentUrl': feedItem.attachmentUrl
+                ':attachmentUrl': feedItem.attachmentUrl,
+                ':updatedAt': feedItem.updatedAt
             }
         }).promise()
 

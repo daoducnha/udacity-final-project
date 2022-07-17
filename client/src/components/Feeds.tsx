@@ -1,4 +1,3 @@
-import dateFormat from 'dateformat'
 import { History } from 'history'
 import * as React from 'react'
 import {
@@ -12,7 +11,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createFeed, deleteFeed, getFeeds, patchFeed } from '../api/feeds-api'
+import { createFeed, deleteFeed, getFeeds } from '../api/feeds-api'
 import Auth from '../auth/Auth'
 import { Feed } from '../types/Feed'
 
@@ -68,26 +67,7 @@ export class Feeds extends React.PureComponent<FeedsProps, FeedsState> {
   }
 
   onFeedUpdateContent = async (feedId: string, newContent: string) => {
-    try {
-      const feed = this.state.feeds.filter(feed => feed.feedId === feedId)[0]
-      await patchFeed(this.props.auth.getIdToken(), feed.feedId, {
-        content: feed.content
-      })
-
-      this.setState({
-        feeds: this.state.feeds.map(feed => {
-          if (feed.feedId === feedId)  {
-            let clone = Object.assign({}, feed)
-            clone['content'] = newContent
-            return clone
-          }
-          return feed
-          
-        })
-      })
-    } catch {
-      alert('Feed update failed')
-    }
+    this.props.history.push(`/feeds/${feedId}/edit`)
   }
 
   async componentDidMount() {
